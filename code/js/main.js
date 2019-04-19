@@ -1,197 +1,193 @@
 
-(function ($) {
-    "use strict";
+$(document).ready(function(){
+	"use strict";
 
-    /*[ Load page ]
-    ===========================================================*/
-    $(".animsition").animsition({
-        inClass: 'fade-in',
-        outClass: 'fade-out',
-        inDuration: 1500,
-        outDuration: 800,
-        linkElement: '.animsition-link',
-        loading: true,
-        loadingParentElement: 'html',
-        loadingClass: 'animsition-loading-1',
-        loadingInner: '<div class="cp-spinner cp-meter"></div>',
-        timeout: false,
-        timeoutCountdown: 5000,
-        onLoadEvent: true,
-        browser: [ 'animation-duration', '-webkit-animation-duration'],
-        overlay : false,
-        overlayClass : 'animsition-overlay-slide',
-        overlayParentElement : 'html',
-        transition: function(url){ window.location.href = url; }
+	var window_width 	 = $(window).width(),
+	window_height 		 = window.innerHeight,
+	header_height 		 = $(".default-header").height(),
+	header_height_static = $(".site-header.static").outerHeight(),
+	fitscreen 			 = window_height - header_height;
+
+
+	// $(window).on('load', function() {
+ //        // Animate loader off screen
+ //        $(".preloader").fadeOut("slow");;
+ //    });
+	
+	$(".fullscreen").css("height", window_height)
+	$(".fitscreen").css("height", fitscreen);
+
+    //-------- Active Sticky Js ----------//
+     $(".sticky-header").sticky({topSpacing:0});
+     
+     // -------   Active Mobile Menu-----//
+
+     $(".mobile-btn").on('click', function(e){
+        e.preventDefault();
+        $(".main-menu").slideToggle();
+        $("span", this).toggleClass("lnr-menu lnr-cross");
+        $(".main-menu").addClass('mobile-menu');
     });
-    
-    /*[ Back to top ]
-    ===========================================================*/
-    var windowH = $(window).height()/2;
-
-    $(window).on('scroll',function(){
-        if ($(this).scrollTop() > windowH) {
-            $("#myBtn").css('display','flex');
-        } else {
-            $("#myBtn").css('display','none');
-        }
+     $(".main-menu li a").on('click', function(e){
+        e.preventDefault();
+        $(".mobile-menu").slideUp();
+        $(".mobile-btn span").toggleClass("lnr-menu lnr-cross");
     });
+     
 
-    $('#myBtn').on("click", function(){
-        $('html, body').animate({scrollTop: 0}, 300);
+    // $(function(){
+    //     $('#Container').mixItUp();
+    // });
+    var mixer = mixitup('#filter-content');
+    $(".controls .filter").on('click', function(event){
+        $(".controls .filter").removeClass('active');
+        $(this).addClass('active');
     });
-
-
-    /*[ Select ]
-    ===========================================================*/
-    $(".selection-1").select2({
-        minimumResultsForSearch: 20,
-        dropdownParent: $('#dropDownSelect1')
-    });
-
-    /*[ Daterangepicker ]
-    ===========================================================*/
-    $('.my-calendar').daterangepicker({
-        "singleDatePicker": true,
-        "showDropdowns": true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        },
-    });
-
-    var myCalendar = $('.my-calendar');
-    var isClick = 0;
-
-    $(window).on('click',function(){ 
-        isClick = 0;
-    });
-
-    $(myCalendar).on('apply.daterangepicker',function(){ 
-        isClick = 0;
-    });
-
-    $('.btn-calendar').on('click',function(e){ 
-        e.stopPropagation();
-
-        if(isClick == 1) isClick = 0;   
-        else if(isClick == 0) isClick = 1;
-
-        if (isClick == 1) {
-            myCalendar.focus();
-        }
-    });
-
-    $(myCalendar).on('click',function(e){ 
-        e.stopPropagation();
-        isClick = 1;
-    });
-
-    $('.daterangepicker').on('click',function(e){ 
-        e.stopPropagation();
-    });
-
-
-    /*[ Play video 01]
-    ===========================================================*/
-    var srcOld = $('.video-mo-01').children('iframe').attr('src');
-
-    $('[data-target="#modal-video-01"]').on('click',function(){
-        $('.video-mo-01').children('iframe')[0].src += "&autoplay=1";
-
-        setTimeout(function(){
-            $('.video-mo-01').css('opacity','1');
-        },300);      
-    });
-
-    $('[data-dismiss="modal"]').on('click',function(){
-        $('.video-mo-01').children('iframe')[0].src = srcOld;
-        $('.video-mo-01').css('opacity','0');
-    });
-    
-
-    /*[ Fixed Header ]
-    ===========================================================*/
-    var header = $('header');
-    var logo = $(header).find('.logo img');
-    var linkLogo1 = $(logo).attr('src');
-    var linkLogo2 = $(logo).data('logofixed');
-
-
-    $(window).on('scroll',function(){
-        if($(this).scrollTop() > 5 && $(this).width() > 992) {
-            $(logo).attr('src',linkLogo2);
-            $(header).addClass('header-fixed');
-        }
-        else {
-            $(header).removeClass('header-fixed');
-            $(logo).attr('src',linkLogo1);
-        }
-        
-    });
-
-    /*[ Show/hide sidebar ]
-    ===========================================================*/
-    $('body').append('<div class="overlay-sidebar trans-0-4"></div>');
-    var ovlSideBar = $('.overlay-sidebar');
-    var btnShowSidebar = $('.btn-show-sidebar');
-    var btnHideSidebar = $('.btn-hide-sidebar');
-    var sidebar = $('.sidebar');
-
-    $(btnShowSidebar).on('click', function(){
-        $(sidebar).addClass('show-sidebar');
-        $(ovlSideBar).addClass('show-overlay-sidebar');
-    })
-
-    $(btnHideSidebar).on('click', function(){
-        $(sidebar).removeClass('show-sidebar');
-        $(ovlSideBar).removeClass('show-overlay-sidebar');
-    })
-
-    $(ovlSideBar).on('click', function(){
-        $(sidebar).removeClass('show-sidebar');
-        $(ovlSideBar).removeClass('show-overlay-sidebar');
-    })
-
-
-    /*[ Isotope ]
-    ===========================================================*/
-    var $topeContainer = $('.isotope-grid');
-    var $filter = $('.filter-tope-group');
-
-    // filter items on button click
-    $filter.each(function () {
-        $filter.on('click', 'button', function () {
-            var filterValue = $(this).attr('data-filter');
-            $topeContainer.isotope({filter: filterValue});
+    // Add smooth scrolling to Menu links
+         $(".main-menu li a, .smooth").on('click', function(event) {
+                if (this.hash !== "") {
+                  event.preventDefault();
+                  var hash = this.hash;
+                  $('html, body').animate({
+                    scrollTop: $(hash).offset().top - (-10)
+                }, 600, function(){
+                 
+                    window.location.hash = hash;
+                });
+            } 
         });
-        
-    });
 
-    // init Isotope
-    $(window).on('load', function () {
-        var $grid = $topeContainer.each(function () {
-            $(this).isotope({
-                itemSelector: '.isotope-item',
-                percentPosition: true,
-                animationEngine : 'best-available',
-                masonry: {
-                    columnWidth: '.isotope-item'
+    $('.active-testimonial-carousel').owlCarousel({
+        loop:true,
+        dot: true,
+        items: 3,
+        margin: 30,
+        autoplay:true,
+        autoplayTimeout:3000,
+        autoplayHoverPause:true,
+        animateOut: 'fadeOutLeft',
+        animateIn: 'fadeInRight',
+        responsive:{
+            0:{
+                items:1,
+            },
+            600:{
+                items:3,
+             }
+        }
+    })
+     // -------   Mail Send ajax
+
+     $(document).ready(function() {
+        var form = $('#myForm'); // contact form
+        var submit = $('.submit-btn'); // submit button
+        var alert = $('.alert'); // alert div for show alert message
+
+        // form submit event
+        form.on('submit', function(e) {
+            e.preventDefault(); // prevent default form submit
+
+            $.ajax({
+                url: 'mail.php', // form action url
+                type: 'POST', // form submit method get/post
+                dataType: 'html', // request type html/json/xml
+                data: form.serialize(), // serialize form data
+                beforeSend: function() {
+                    alert.fadeOut();
+                    submit.html('Sending....'); // change submit button text
+                },
+                success: function(data) {
+                    alert.html(data).fadeIn(); // fade in response data
+                    form.trigger('reset'); // reset form
+                    submit.html(''); // reset submit button text
+                },
+                error: function(e) {
+                    console.log(e)
                 }
             });
         });
     });
 
-    var labelGallerys = $('.label-gallery');
-
-    $(labelGallerys).each(function(){
-        $(this).on('click', function(){
-            for(var i=0; i<labelGallerys.length; i++) {
-                $(labelGallerys[i]).removeClass('is-actived');
-            }
-
-            $(this).addClass('is-actived');
-        });
+     $(document).ready(function() {
+        $('#mc_embed_signup').find('form').ajaxChimp();
     });
+ });
+(function ($){
 
-    
+    $.fn.bekeyProgressbar = function(options){
+
+        options = $.extend({
+            animate     : true,
+          animateText : true
+        }, options);
+
+        var $this = $(this);
+      
+        var $progressBar = $this;
+        var $progressCount = $progressBar.find('.progressBar-percentage-count');
+        var $circle = $progressBar.find('.progressBar-circle');
+        var percentageProgress = $progressBar.attr('data-progress');
+        var percentageRemaining = (100 - percentageProgress);
+        var percentageText = $progressCount.parent().attr('data-progress');
+      
+        //Calcule la circonférence du cercle
+        var radius = $circle.attr('r');
+        var diameter = radius * 2;
+        var circumference = Math.round(Math.PI * diameter);
+
+        //Calcule le pourcentage d'avancement
+        var percentage =  circumference * percentageRemaining / 100;
+
+        $circle.css({
+          'stroke-dasharray' : circumference,
+          'stroke-dashoffset' : percentage
+        })
+        
+        //Animation de la barre de progression
+        if(options.animate === true){
+          $circle.css({
+            'stroke-dashoffset' : circumference
+          }).animate({
+            'stroke-dashoffset' : percentage
+          }, 3000 )
+        }
+        
+        //Animation du texte (pourcentage)
+        if(options.animateText == true){
+ 
+          $({ Counter: 0 }).animate(
+            { Counter: percentageText },
+            { duration: 3000,
+             step: function () {
+               $progressCount.text( Math.ceil(this.Counter) + '%');
+             }
+            });
+
+        }else{
+          $progressCount.text( percentageText + '%');
+        }
+      
+    };
 
 })(jQuery);
+
+$(document).ready(function(){
+  
+  $('.progressBar--animateNone').bekeyProgressbar({
+    animate : false,
+    animateText : false
+  });
+  
+  $('.progressBar--animateCircle').bekeyProgressbar({
+    animate : true,
+    animateText : false
+  });
+  
+  $('.progressBar--animateText').bekeyProgressbar({
+    animate : false,
+    animateText : true
+  });
+  
+  $('.progressBar--animateAll').bekeyProgressbar();
+  
+})
